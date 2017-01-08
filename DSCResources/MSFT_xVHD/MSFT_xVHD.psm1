@@ -60,6 +60,10 @@ function Set-TargetResource
         # Size of Vhd to be created
         [Uint64]$MaximumSizeBytes,
 
+        # Type of Vhd to be created
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [String]$Type = "Dynamic",
+
         # Virtual disk format - Vhd or Vhdx
         [ValidateSet("Vhd","Vhdx")]
         [String]$Generation = "Vhd",
@@ -135,6 +139,11 @@ function Set-TargetResource
                         Write-Verbose -Message "$vhdFilePath is $Ensure and size is $MaximumSizeBytes."                
                     }
                 }
+
+                if($vhd.Type -ne $Type)
+                {
+                    Throw "This module can't convert disk types yet"
+                }
         }    
 
     # Vhd file is not present
@@ -148,7 +157,12 @@ function Set-TargetResource
             }
             else
             {
-                $null = New-VHD -Path $vhdFilePath -SizeBytes $MaximumSizeBytes
+                $params = @{
+                    Path = $vhdFilePath
+                    SizeBytes = $MaximumSizeBytes
+                    $Type = $True
+                }
+                $null = New-VHD @params
             }
             Write-Verbose -Message "$vhdFilePath is now $Ensure"
     }
@@ -180,6 +194,10 @@ function Test-TargetResource
         # Virtual disk format - Vhd or Vhdx
         [ValidateSet("Vhd","Vhdx")]
         [String]$Generation = "Vhd",
+
+        # Type of Vhd to be created
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [String]$Type,
 
         # Should the VHD be created or deleted
         [ValidateSet("Present","Absent")]

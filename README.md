@@ -27,6 +27,7 @@ This resource is particularly useful when bootstrapping DSC Configurations into 
 * **ParentPath**: Parent VHD file path, for differencing disk 
 * **MaximumSizeBytes**: Maximum size of VHD to be created 
 * **Generation**: Virtual disk format: { Vhd | VHDx }
+* **Type**: Virtual disk type: { Dynamic | Fixed | Differencing }
 * **Ensure**: Ensures that the VHD is Present or Absent 
 
 ### xVMHyperV
