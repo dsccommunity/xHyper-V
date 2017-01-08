@@ -30,6 +30,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **MaximumSizeBytes**: Maximum size of VHD to be created
 * **Generation**: Virtual disk format: { Vhd | VHDx }
 * **Ensure**: Ensures that the VHD is Present or Absent
+* **Type**: Virtual disk type: { Dynamic | Fixed | Differencing }
 
 ### xVMHyperV
 
@@ -120,6 +121,7 @@ Please see the Examples section for more details.
 ### Unreleased
 
 * Adding a new xVMHost resource for managing Hyper-V host settings.
+* xVHD: Support setting the disk type.
 
 ### 3.8.0.0
 
@@ -285,7 +287,7 @@ Configuration Sample_EndToEndXHyperV_RunningVM
 
 ### Create a new VHD
 
-This configuration will create a new VHD on Hyper-V host.
+This configuration will create a new Fixed VHD on Hyper-V host.
 
 ```powershell
 Configuration Sample_xVHD_NewVHD
@@ -304,6 +306,9 @@ Configuration Sample_xVHD_NewVHD
         [ValidateSet("Vhd","Vhdx")]
         [string]$Generation = "Vhd",
 
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [string]$Type = "Fixed",
+
         [ValidateSet("Present","Absent")]
         [string]$Ensure = "Present"
     )
@@ -318,6 +323,7 @@ Configuration Sample_xVHD_NewVHD
             Name             = $Name
             Path             = $Path
             Generation       = $Generation
+            Type             = $Type
             MaximumSizeBytes = $MaximumSizeBytes
         }
     }
@@ -345,6 +351,9 @@ Configuration Sample_xVhd_DiffVHD
         [ValidateSet("Vhd","Vhdx")]
         [string]$Generation = "Vhd",
 
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [string]$Type = "Differencing",
+
         [ValidateSet("Present","Absent")]
         [string]$Ensure = "Present"
     )
@@ -360,6 +369,7 @@ Configuration Sample_xVhd_DiffVHD
             Path       = $Path
             ParentPath = $ParentPath
             Generation = $Generation
+            Type       = $Type
         }
     }
 }
