@@ -1,4 +1,4 @@
-configuration Sample_xVhd_DiffVhd
+configuration Sample_xVhd_FixedVhd
 {
     param
     (
@@ -10,14 +10,11 @@ configuration Sample_xVhd_DiffVhd
         [Parameter(Mandatory)]
         [string]$Path,
         
-        [Parameter(Mandatory)]
-        [string]$ParentPath,
-        
         [ValidateSet("Vhd","Vhdx")]
         [string]$Generation = "Vhd",
 
         [ValidateSet("Dynamic","Fixed","Differencing")]
-        [string]$Type = "Differencing",
+        [string]$Type = "Fixed",
 
         [ValidateSet("Present","Absent")]
         [string]$Ensure = "Present"    
@@ -39,7 +36,6 @@ configuration Sample_xVhd_DiffVhd
             Ensure     = $Ensure
             Name       = $Name
             Path       = $Path
-            ParentPath = $ParentPath
             Generation = $Generation
             Type       = $Type
             DependsOn  = '[WindowsFeature]HyperV'

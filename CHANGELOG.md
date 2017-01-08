@@ -34,6 +34,8 @@
     * Updated appveyor.yml to include codecov.
     * Added .codecov.yml.
     * Added codecov badges to Readme.
+* MSFT_xVHD:
+  * Support setting the disk type.
 
 ## 3.8.0.0
 

@@ -70,6 +70,8 @@ Manages VHDs in a Hyper-V host.
 * **`[Uint64]` MaximumSizeBytes** _(Write)_: Maximum size of VHD to be created.
 * **`[String]` Generation** _(Write)_: Virtual disk format.
  The default value is Vhd. { *Vhd* | Vhdx }.
+* **`[String]` Type** _(Write)_: Virtual disk type.
+ The default value is Dynamic. { *Dynamic* | Fixed | Differencing }.
 * **`[String]` Ensure** _(Write)_: Ensures that the VHD is Present or Absent.
  The default value is Present. { *Present* | Absent }.
 
@@ -83,6 +85,7 @@ Manages VHDs in a Hyper-V host.
 #### Examples xVHD
 
 * [Create a new VHD](/Examples/Sample_xVHD_NewVHD.ps1)
+* [Create a new Fixed VHD](/Examples/Sample_xVHD_FixedVHD.ps1)
 * [Create a differencing VHD](/Examples/Sample_xVHD_DiffVHD.ps1)
 
 ### xVhdFile

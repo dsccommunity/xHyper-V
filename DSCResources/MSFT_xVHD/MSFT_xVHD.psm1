@@ -60,6 +60,11 @@ function Set-TargetResource
         # Size of Vhd to be created
         [Uint64]$MaximumSizeBytes,
 
+        # Type of Vhd to be created
+        [parameter()]
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [String]$Type = "Dynamic",
+
         # Virtual disk format - Vhd or Vhdx
         [ValidateSet("Vhd","Vhdx")]
         [String]$Generation = "Vhd",
@@ -73,6 +78,17 @@ function Set-TargetResource
     if(!(Get-Module -ListAvailable -Name Hyper-V))
     {
         Throw "Please ensure that Hyper-V role is installed with its PowerShell module"
+    }
+
+    # Check the module combinations make sense
+    if($ParentPath -and $Type -ne "Differencing")
+    {
+        Throw "Parent path is only supported for Differencing disks"
+    }
+
+    if($null -eq $ParentPath -and $Type -eq "Differencing")
+    {
+        Throw "Differencing requires a parent path"
     }
 
     # Construct the full path for the vhdFile
@@ -135,6 +151,11 @@ function Set-TargetResource
                         Write-Verbose -Message "$vhdFilePath is $Ensure and size is $MaximumSizeBytes."                
                     }
                 }
+
+                if($vhd.Type -ne $Type)
+                {
+                    Throw "This module can't convert disk types"
+                }
         }    
 
     # Vhd file is not present
@@ -148,7 +169,12 @@ function Set-TargetResource
             }
             else
             {
-                $null = New-VHD -Path $vhdFilePath -SizeBytes $MaximumSizeBytes
+                $params = @{
+                    Path = $vhdFilePath
+                    SizeBytes = $MaximumSizeBytes
+                    $Type = $True
+                }
+                $null = New-VHD @params
             }
             Write-Verbose -Message "$vhdFilePath is now $Ensure"
     }
@@ -181,6 +207,11 @@ function Test-TargetResource
         [ValidateSet("Vhd","Vhdx")]
         [String]$Generation = "Vhd",
 
+        # Type of Vhd to be created
+        [parameter()]
+        [ValidateSet("Dynamic","Fixed","Differencing")]
+        [String]$Type,
+
         # Should the VHD be created or deleted
         [ValidateSet("Present","Absent")]
         [String]$Ensure = "Present"
@@ -198,7 +229,18 @@ function Test-TargetResource
     {
        Throw "Either specify ParentPath or MaximumSizeBytes property." 
     }
-            
+
+    # Check the module combinations make sense
+    if($ParentPath -and $Type -ne "Differencing")
+    {
+        Throw "Parent path is only supported for Differencing disks"
+    }
+
+    if($null -eq $ParentPath -and $Type -eq "Differencing")
+    {
+        Throw "Differencing requires a parent path"
+    }
+
     if($ParentPath)
     {
         # Ensure only one value is specified - differencing disk or new disk
