@@ -84,6 +84,7 @@ try
                 LoadBalancingAlgorithm          = 'HyperVPort'
                 BandwidthReservationMode        = 'Default'
                 NetAdapterInterfaceDescriptions = @("Microsoft Network Adapter Multiplexor Driver #1", "Microsoft Network Adapter Multiplexor Driver #2")
+                IovEnabled                      = $false
             }
 
             if ($PSBoundParameters.ContainsKey('Id'))
@@ -172,7 +173,11 @@ try
 
                 [Parameter()]
                 [Guid]
-                $Id
+                $Id,
+
+                [Parameter()]
+                [Boolean]
+                $EnableIov
             )
 
             if($PSBoundParameters.ContainsKey('Id'))

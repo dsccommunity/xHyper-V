@@ -7,6 +7,9 @@ ConvertFrom-StringData @'
     RemoveAndReaddSwitchMessage = Removing switch '{0}' and creating with the correct properties ...
     SwitchCorrectNetAdapterAndBandwidthMode = Switch '{0}' set has right network adapter(s) ('{1}') and BandwidthReservationMode ('{2}')
     CheckAllowManagementOS = Checking switch '{0}' AllowManagementOS ...
+    CheckIovEnabled = Checking switch '{0}' IovEnabled ...
+    IovEnabledCorrect = Switch '{0}' IovEnabled is correctly set
+    IovEnabledIncorrect = Switch '{0}' IovEnabled property is not correct
     AllowManagementOSIncorrect = Switch '{0}' AllowManagementOS property is not correct
     AllowManagementOSUpdated = Switch '{0}' AllowManagementOS property is set to '{1}'
     AllowManagementOSCorrect = Switch '{0}' AllowManagementOS is correctly set

@@ -26,6 +26,10 @@
     * [PR #67](https://github.com/PowerShell/xHyper-V/pull/67), Fixes [Issue #145](https://github.com/PowerShell/xHyper-V/issues/145).
   * Fixed Get throws error when NetworkAdapters are not attached or missing properties.
 
+* MSFT_xVMSwitch:
+  * Added new option to enable Iov support on the VMSwitch
+    * [PR #166](https://github.com/PowerShell/xHyper-V/pull/166), Fixes [Issue #166](https://github.com/PowerShell/xHyper-V/issues/166).
+
 ## 3.15.0.0
 
 * Explicitly removed extra hidden files from release package.

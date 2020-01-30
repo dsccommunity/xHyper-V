@@ -304,6 +304,7 @@ try
                     EmbeddedTeamingEnabled = $true
                     Id = [Guid]::NewGuid()
                     NetAdapterInterfaceDescriptions = @("Microsoft Network Adapter Multiplexor Driver #1", "Microsoft Network Adapter Multiplexor Driver #2")
+                    IovEnabled = $false
                 }
 
                 $testParams = @{

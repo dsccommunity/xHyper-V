@@ -5,6 +5,7 @@ class MSFT_xVMSwitch : OMI_BaseResource
     [Key, Description("Type of switch"), ValueMap{"External","Internal","Private"}, Values{"External","Internal","Private"}] String Type;
     [Write, Description("Network adapter name(s) for external switch type")] String NetAdapterName[];
     [Write, Description("Specify if the VM host has access to the physical NIC")] Boolean AllowManagementOS;
+    [Write, Description("Specify if Iov is enabled on the VMSwitch")] Boolean IovEnabled;
     [Write, Description("Should embedded NIC teaming be used (Windows Server 2016 only)")] Boolean EnableEmbeddedTeaming;
     [Write, Description("Type of Bandwidth Reservation Mode to use for the switch"), ValueMap{"Default","Weight","Absolute","None","NA"}, Values{"Default","Weight","Absolute","None","NA"}] String BandwidthReservationMode;
     [Write, Description("Specifies the load balancing algorithm that this switch team uses"), ValueMap{"Dynamic","HyperVPort"}, Values{"Dynamic","HyperVPort"}] String LoadBalancingAlgorithm;

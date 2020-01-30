@@ -95,6 +95,7 @@ function Get-TargetResource
         Type                    = $switch.SwitchType
         NetAdapterName          = [string[]]$netAdapterName
         AllowManagementOS       = $switch.AllowManagementOS
+        IovEnabled              = $switch.IovEnabled
         EnableEmbeddedTeaming   = $switch.EmbeddedTeamingEnabled
         LoadBalancingAlgorithm  = $loadBalancingAlgorithm
         Ensure                  = $ensure
@@ -129,6 +130,9 @@ function Get-TargetResource
 
 .PARAMETER AllowManagementOS
     Specify if the VM host has access to the physical NIC.
+
+.PARAMETER IovEnabled
+    Specify if Iov is enabled on the VMSwitch
 
 .PARAMETER EnableEmbeddedTeaming
     Should embedded NIC teaming be used (Windows Server 2016 only).
@@ -167,6 +171,10 @@ function Set-TargetResource
         [Parameter()]
         [Boolean]
         $AllowManagementOS = $false,
+
+        [Parameter()]
+        [Boolean]
+        $IovEnabled = $false,
 
         [Parameter()]
         [Boolean]
@@ -278,6 +286,12 @@ function Set-TargetResource
                 $removeReaddSwitch = $true
             }
 
+            If ($switch.IovEnabled -ne $IovEnabled)
+            {
+                Write-Verbose -Message ($LocalizedData.IovEnabledIncorrect -f $Name)
+                $removeReaddSwitch = $true
+            }
+
             if ($removeReaddSwitch)
             {
                 Write-Verbose -Message ($LocalizedData.RemoveAndReaddSwitchMessage -f $Name)
@@ -285,6 +299,7 @@ function Set-TargetResource
                 $parameters = @{}
                 $parameters["Name"] = $Name
                 $parameters["NetAdapterName"] = $NetAdapterName
+                $parameters["EnableIov"] = $IovEnabled
 
                 if ($BandwidthReservationMode -ne "NA")
                 {
@@ -335,6 +350,7 @@ function Set-TargetResource
             Write-Verbose -Message $LocalizedData.CreatingSwitch
             $parameters = @{}
             $parameters["Name"] = $Name
+            $parameters["EnableIov"] = $IovEnabled
 
             if ($BandwidthReservationMode -ne "NA")
             {
@@ -398,6 +414,9 @@ function Set-TargetResource
 .PARAMETER AllowManagementOS
     Specify if the VM host has access to the physical NIC.
 
+.PARAMETER IovEnabled
+    Specify if Iov is enabled on the VMSwitch
+
 .PARAMETER EnableEmbeddedTeaming
     Should embedded NIC teaming be used (Windows Server 2016 only).
 
@@ -436,6 +455,10 @@ function Test-TargetResource
         [Parameter()]
         [Boolean]
         $AllowManagementOS = $false,
+
+        [Parameter()]
+        [Boolean]
+        $IovEnabled = $false,
 
         [Parameter()]
         [Boolean]
@@ -600,6 +623,16 @@ function Test-TargetResource
                         {
                             Write-Verbose -Message ($LocalizedData.AllowManagementOSCorrect -f $Name)
                         }
+                    }
+
+                    Write-Verbose -Message ($LocalizedData.CheckIovEnabled -f $Name)
+                    if (($switch.IovEnabled -ne $IovEnabled))
+                    {
+                        return $false
+                    }
+                    else
+                    {
+                        Write-Verbose -Message ($LocalizedData.IovEnabledCorrect -f $Name)
                     }
 
                     if($PSBoundParameters.ContainsKey('LoadBalancingAlgorithm'))

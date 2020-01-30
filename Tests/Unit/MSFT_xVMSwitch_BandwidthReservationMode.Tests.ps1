@@ -88,6 +88,7 @@ try
                 SwitchType = 'External'
                 AllowManagementOS = $AllowManagementOS
                 NetAdapterInterfaceDescription = 'Microsoft Network Adapter Multiplexor Driver'
+                IovEnabled = $false
             }
 
             if ($BandwidthReservationMode -ne 'NA')
