@@ -36,6 +36,8 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
   - Fixed VMName property in example.
 - xVMNetworkAdapter
   - Fixed MacAddress sample data.
+  - Fixed Get-TargetResource failing for a ManagementOS adapter while trying
+    to obtain guest IP settings.
 - xVMSwitch
   - Correctly return the state as `$true` or `$false` depending on the
     `Ensure` property when the switch does not exist.

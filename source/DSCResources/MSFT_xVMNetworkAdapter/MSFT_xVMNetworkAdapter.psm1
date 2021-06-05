@@ -83,13 +83,13 @@ function Get-TargetResource
         {
             $configuration.Add('MacAddress', $netAdapter.MacAddress)
             $configuration.Add('DynamicMacAddress', $netAdapter.DynamicMacAddressEnabled)
-        }
 
-        $networkInfo = Get-NetworkInformation -VMName $VMName -Name $Name
-        if ($networkInfo)
-        {
-            $item = New-CimInstance -ClassName MSFT_xNetworkSettings -Property $networkInfo -Namespace root/microsoft/windows/desiredstateconfiguration -ClientOnly
-            $configuration.Add('NetworkSetting', $item)
+            $networkInfo = Get-NetworkInformation -VMName $VMName -Name $Name
+            if ($networkInfo)
+            {
+                $item = New-CimInstance -ClassName MSFT_xNetworkSettings -Property $networkInfo -Namespace root/microsoft/windows/desiredstateconfiguration -ClientOnly
+                $configuration.Add('NetworkSetting', $item)
+            }
         }
 
         $configuration.Add('Ensure', 'Present')
