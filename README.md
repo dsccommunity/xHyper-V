@@ -364,6 +364,9 @@ Manages VMNetadapters attached to a Hyper-V virtual machine or the management OS
 * **`[String]` VMName** _(Required)_: Name of the VM to attach to.
   If you want to attach new VM Network adapter to the management OS,
   set this property to 'Management OS'.
+* **`[Boolean]` IgnoreNetworkSetting** _(Write)_:  If specified with `True` the network settings of the network adapter are not changed.
+  This should be set if the guest operating system configures the network adapter.
+  Default value is `False`.
 * **`[xNetworkSettings]` NetworkSetting** _(Write)_: Network Settings of the network adapter.
   If this parameter is not supplied, DHCP will be used.
 * **`[String]` MacAddress** _(Write)_: Use this to specify a Static MAC Address.

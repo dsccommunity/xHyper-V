@@ -16,6 +16,7 @@ class MSFT_xVMNetworkAdapter : OMI_BaseResource
     [Required] String SwitchName;
     [Required] String VMName;
     [Write] String MacAddress;
+    [Write] Boolean IgnoreNetworkSetting;
     [Write, EmbeddedInstance("xNetworkSettings")] String NetworkSetting;
     [Write] String VlanId;
     [Write, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
