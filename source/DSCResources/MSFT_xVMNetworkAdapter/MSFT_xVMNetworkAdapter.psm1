@@ -131,8 +131,12 @@ function Get-TargetResource
     Specifies the MAC address for the network adapter. This is not applicable if VMName
     is set to ManagementOS. Use this parameter to specify a static MAC address.
 
-.PARAMETER IpAddress
+.Parameter IgnoreNetworkSetting
+    Specifies whether the IpAddress information for the network adapter is set or ignored
+
+.PARAMETER NetworkSetting
     Specifies the IpAddress information for the network adapter.
+    If not specified DHCP will be enabled on the network adapter.
 
 .PARAMETER VlanId
     Specifies the Vlan Id for the network adapter.
@@ -164,6 +168,10 @@ function Set-TargetResource
         [Parameter()]
         [System.String]
         $MacAddress,
+
+        [Parameter()]
+        [Boolean]
+        $IgnoreNetworkSetting = $false,
 
         [Parameter()]
         [Microsoft.Management.Infrastructure.CimInstance]
@@ -267,7 +275,7 @@ function Set-TargetResource
             $netAdapterExists = Add-VMNetworkAdapter @arguments -Passthru -ErrorAction Stop
         }
 
-        if ($VmName -ne 'ManagementOS')
+        if ($VmName -ne 'ManagementOS' -and $IgnoreNetworkSetting -ne $true )
         {
             $networkInfo = Get-NetworkInformation -VMName $VMName -Name $Name
             if (-not $NetworkSetting)
@@ -363,8 +371,12 @@ function Set-TargetResource
     Specifies the MAC address for the network adapter. This is not applicable if VMName
     is set to ManagementOS. Use this parameter to specify a static MAC address.
 
-.PARAMETER IpAddress
+.Parameter IgnoreNetworkSetting
+    Specifies whether the IpAddress information for the network adapter is tested or ignored
+
+.PARAMETER NetworkSetting
     Specifies the IpAddress information for the network adapter.
+    If not specified DHCP will be enabled on the network adapter.
 
 .PARAMETER VlanId
     Specifies the Vlan Id for the network adapter.
@@ -397,6 +409,10 @@ function Test-TargetResource
         [Parameter()]
         [System.String]
         $MacAddress,
+
+        [Parameter()]
+        [Boolean]
+        $IgnoreNetworkSetting = $false,
 
         [Parameter()]
         [Microsoft.Management.Infrastructure.CimInstance]
@@ -457,50 +473,53 @@ function Test-TargetResource
                     }
                 }
 
-                $networkInfo = Get-NetworkInformation -VMName $VMName -Name $Name
-                if (-not $NetworkSetting)
+                if( $IgnoreNetworkSetting -ne $true )
                 {
-                    if ($networkInfo)
+                    $networkInfo = Get-NetworkInformation -VMName $VMName -Name $Name
+                    if (-not $NetworkSetting)
                     {
-                        Write-Verbose -Message $script:localizedData.NotDhcp
-                        return $false
-                    }
-                }
-                else
-                {
-                    if (-not $networkInfo)
-                    {
-                        Write-Verbose -Message $script:localizedData.Dhcp
-                        return $false
+                        if ($networkInfo)
+                        {
+                            Write-Verbose -Message $script:localizedData.NotDhcp
+                            return $false
+                        }
                     }
                     else
                     {
-                        $ipAddress = $NetworkSetting.CimInstanceProperties['IpAddress'].Value
-                        $subnet = $NetworkSetting.CimInstanceProperties['Subnet'].Value
-                        $defaultGateway = $NetworkSetting.CimInstanceProperties['DefaultGateway'].Value
-                        $dnsServer = $NetworkSetting.CimInstanceProperties['DnsServer'].Value
-
-                        if (-not $IpAddress -or -not $subnet)
+                        if (-not $networkInfo)
                         {
-                            throw $script:localizedData.MissingIPAndSubnet
-                        }
-
-                        if ($ipAddress -and -not $networkInfo.IPAddress.Split(',').Contains($ipAddress))
-                        {
-                            Write-Verbose -Message $script:localizedData.IPAddressNotConfigured
+                            Write-Verbose -Message $script:localizedData.Dhcp
                             return $false
                         }
-
-                        if ($defaultGateway -and -not $networkInfo.DefaultGateway.Split(',').Contains($defaultGateway))
+                        else
                         {
-                            Write-Verbose -Message $script:localizedData.GatewayNotConfigured
-                            return $false
-                        }
+                            $ipAddress = $NetworkSetting.CimInstanceProperties['IpAddress'].Value
+                            $subnet = $NetworkSetting.CimInstanceProperties['Subnet'].Value
+                            $defaultGateway = $NetworkSetting.CimInstanceProperties['DefaultGateway'].Value
+                            $dnsServer = $NetworkSetting.CimInstanceProperties['DnsServer'].Value
 
-                        if ($dnsServer -and -not $networkInfo.DNSServer.Split(',').Contains($dnsServer))
-                        {
-                            Write-Verbose -Message $script:localizedData.DNSServerNotConfigured
-                            return $false
+                            if (-not $IpAddress -or -not $subnet)
+                            {
+                                throw $script:localizedData.MissingIPAndSubnet
+                            }
+
+                            if ($ipAddress -and -not $networkInfo.IPAddress.Split(',').Contains($ipAddress))
+                            {
+                                Write-Verbose -Message $script:localizedData.IPAddressNotConfigured
+                                return $false
+                            }
+
+                            if ($defaultGateway -and -not $networkInfo.DefaultGateway.Split(',').Contains($defaultGateway))
+                            {
+                                Write-Verbose -Message $script:localizedData.GatewayNotConfigured
+                                return $false
+                            }
+
+                            if ($dnsServer -and -not $networkInfo.DNSServer.Split(',').Contains($dnsServer))
+                            {
+                                Write-Verbose -Message $script:localizedData.DNSServerNotConfigured
+                                return $false
+                            }
                         }
                     }
                 }
